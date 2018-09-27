@@ -10,7 +10,7 @@ func TestGetStack(t *testing.T) {
 		name string
 		want Stack
 	}{
-		// TODO: Add test cases.
+		{name: "unknown", want: UNKNOWN},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -30,7 +30,10 @@ func TestGetStackLogo(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
+		{name: "qa", args: struct{ c Stack }{c: 1}, want: "https://qa.libertymedical.fr/assets/mail_assets/logo_couleur_rvb_720_135_qa.png"},
+		{name: "preprod", args: struct{ c Stack }{c: 2}, want: "https://preprod.libertymedical.fr/assets/mail_assets/logo_couleur_rvb_720_135_pp.png"},
+		{name: "prod", args: struct{ c Stack }{c: 3}, want: "https://www.libertymedical.fr/assets/mail_assets/logo_couleur_rvb_720_135.png"},
+		{name: "unknown", args: struct{ c Stack }{c: 4}, want: "https://www.libertymedical.fr/assets/mail_assets/logo_couleur_rvb_720_135.png"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

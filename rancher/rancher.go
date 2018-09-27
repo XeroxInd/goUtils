@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+// Stack :
+// 1 : QA
+// 2 : PREPROD
+// 3 : PROD
+// 4 : UNKNOWN, which is the case when you test outside of Rancher (I.E. your laptop)
 type Stack int
 
 const (
@@ -16,6 +21,11 @@ const (
 	UNKNOWN
 )
 
+// GetStack return the current Rancher Stack :
+// 1 : QA
+// 2 : PREPROD
+// 3 : PROD
+// 4 : UNKNOWN, which is the case when you test outside of Rancher (I.E. your laptop)
 func GetStack() Stack {
 	//Reflect Rancher environment
 	resp, err := http.Get("http://rancher-metadata/latest/self/stack/name")
@@ -40,6 +50,8 @@ func GetStack() Stack {
 	}
 }
 
+// GetStackLogo return the logo URL for the current stack.
+// In case of unknown stack, the prod logo is returned.
 func GetStackLogo(c Stack) string {
 	qaLogo := env.GetEnvOrElse("QA_LOGO_URL", "https://qa.libertymedical.fr/assets/mail_assets/logo_couleur_rvb_720_135_qa.png")
 	prodLogo := env.GetEnvOrElse("PROD_LOGO_URL", "https://www.libertymedical.fr/assets/mail_assets/logo_couleur_rvb_720_135.png")
