@@ -13,6 +13,6 @@ type Config struct {
 }
 
 type S3Object struct {
-	bucket string
-	object string
+	Bucket string
+	Object string
 }
