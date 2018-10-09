@@ -45,13 +45,13 @@ func (c *Config) Load() error {
 }
 
 func (c *Config) Put(s3object S3Object, content []byte) error {
-	c.Client.MakeBucket(s3object.bucket, "")
+	c.Client.MakeBucket(s3object.Bucket, "")
 	encryption, err := encrypt.NewSSEC(c.AesKeyValue)
 	if err != nil {
 		return fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
 	}
 
-	_, err = c.Client.PutObject(s3object.bucket, s3object.object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
+	_, err = c.Client.PutObject(s3object.Bucket, s3object.Object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
 		ContentType:          "application/octet-stream",
 		ServerSideEncryption: encryption,
 	})
@@ -80,7 +80,7 @@ func (c *Config) getObject(s3object S3Object, encrypted bool) (obj *minio.Object
 		if err != nil {
 			return nil, fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
 		}
-		obj, err = c.Client.GetObject(s3object.bucket, s3object.object, minio.GetObjectOptions{
+		obj, err = c.Client.GetObject(s3object.Bucket, s3object.Object, minio.GetObjectOptions{
 			ServerSideEncryption: encryption,
 		})
 		if err != nil {
@@ -88,7 +88,7 @@ func (c *Config) getObject(s3object S3Object, encrypted bool) (obj *minio.Object
 		}
 	} else {
 		var err error
-		obj, err = c.Client.GetObject(s3object.bucket, s3object.object, minio.GetObjectOptions{})
+		obj, err = c.Client.GetObject(s3object.Bucket, s3object.Object, minio.GetObjectOptions{})
 		if err != nil {
 			return nil, fmt.Errorf("unable to get object : %s", err.Error())
 		}
