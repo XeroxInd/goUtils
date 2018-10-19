@@ -4,7 +4,6 @@ require (
 	github.com/certifi/gocertifi v0.0.0-20180905225744-ee1a9a0726d2 // indirect
 	github.com/getsentry/raven-go v0.0.0-20180903072508-084a9de9eb03
 	github.com/go-ini/ini v1.38.3 // indirect
-	github.com/go-openapi/swag v0.17.0
 	github.com/gopherjs/gopherjs v0.0.0-20181004151105-1babbf986f6f // indirect
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
 	github.com/minio/minio-go v6.0.7+incompatible
