@@ -1,6 +1,8 @@
 package logs
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 
 	"github.com/getsentry/raven-go"
@@ -18,4 +20,15 @@ func Info(msg string, category string) {
 func Error(msg error, category string) {
 	raven.CaptureError(msg, map[string]string{"category": category})
 	log.Print(msg)
+}
+
+func PrettyPrint(input interface{}) (string, error) {
+	var log = new(bytes.Buffer)
+	encoder := json.NewEncoder(log)
+	encoder.SetIndent("", "   ")
+	err := encoder.Encode(input)
+	if err != nil {
+		return "", err
+	}
+	return log.String(), nil
 }
