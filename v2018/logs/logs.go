@@ -22,6 +22,8 @@ func Error(msg error, category string) {
 	log.Print(msg)
 }
 
+// PrettyPrint convert any struct into formatted JSON like string.
+// This is useful for debugging.
 func PrettyPrint(input interface{}) (string, error) {
 	var log = new(bytes.Buffer)
 	encoder := json.NewEncoder(log)
