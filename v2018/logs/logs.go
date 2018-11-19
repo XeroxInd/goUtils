@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/getsentry/raven-go"
 )
@@ -12,6 +13,7 @@ import (
 // pointed by `SENTRY_DSN` environment variable.
 func Info(msg string, category string) {
 	raven.CaptureMessage(msg, map[string]string{"category": category})
+	log.SetOutput(os.Stdout)
 	log.Print(msg)
 }
 
@@ -19,6 +21,7 @@ func Info(msg string, category string) {
 // pointed by `SENTRY_DSN` environment variable.
 func Error(msg error, category string) {
 	raven.CaptureError(msg, map[string]string{"category": category})
+	log.SetOutput(os.Stderr)
 	log.Print(msg)
 }
 
