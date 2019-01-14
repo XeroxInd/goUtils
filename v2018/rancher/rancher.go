@@ -1,10 +1,11 @@
 package rancher
 
 import (
-	"git.int.libmed.fr/LibertyMedical/goUtil/v2018/env"
-	"git.int.libmed.fr/LibertyMedical/goUtil/v2018/logs"
 	"io/ioutil"
 	"net/http"
+
+	"git.libmed.fr/LibertyMedical/goUtil/v2018/env"
+	"git.libmed.fr/LibertyMedical/goUtil/v2018/logs"
 )
 
 // Stack :
