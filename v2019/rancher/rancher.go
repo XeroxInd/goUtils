@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"git.libmed.fr/LibMed/goUtil/v2018/v2018/env"
-	"git.libmed.fr/LibMed/goUtil/v2018/v2018/logs"
+	"git.libmed.fr/LibMed/goUtil/v2019/v2019/env"
+	"git.libmed.fr/LibMed/goUtil/v2019/v2019/logs"
 )
 
 // Stack :

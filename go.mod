@@ -1,4 +1,4 @@
-module git.libmed.fr/LibMed/goUtil/v2018
+module git.libmed.fr/LibMed/goUtil/v2019
 
 require (
 	github.com/certifi/gocertifi v0.0.0-20180905225744-ee1a9a0726d2 // indirect
