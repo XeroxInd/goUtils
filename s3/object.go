@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 
 	"bytes"
+
 	"github.com/minio/minio-go"
 	"github.com/minio/minio-go/pkg/encrypt"
 	"github.com/pkg/errors"
@@ -45,7 +46,17 @@ func (c *Config) Load() error {
 }
 
 func (c *Config) Put(s3object S3Object, content []byte) error {
-	c.Client.MakeBucket(s3object.Bucket, "")
+	exist, err := c.Client.BucketExists(s3object.Bucket)
+	if err != nil {
+		return fmt.Errorf("unable to stat bucket : %s", err.Error())
+	}
+	if !exist {
+		err = c.Client.MakeBucket(s3object.Bucket, "")
+		if err != nil {
+			return fmt.Errorf("unable to make missing bucket : %s", err.Error())
+		}
+	}
+
 	encryption, err := encrypt.NewSSEC(c.AesKeyValue)
 	if err != nil {
 		return fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
@@ -60,6 +71,22 @@ func (c *Config) Put(s3object S3Object, content []byte) error {
 	}
 	return nil
 
+}
+
+func (c *Config) Stat(object S3Object) (info minio.ObjectInfo, err error) {
+	encryption, err := encrypt.NewSSEC(c.AesKeyValue)
+	if err != nil {
+		return minio.ObjectInfo{}, fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
+	}
+	info, err = c.Client.StatObject(object.Bucket, object.Object, minio.StatObjectOptions{
+		minio.GetObjectOptions{
+			ServerSideEncryption: encryption,
+		},
+	})
+	if err != nil {
+		return minio.ObjectInfo{}, fmt.Errorf("unable to stat object : %s", err.Error())
+	}
+	return
 }
 
 func (c *Config) Get(s3object S3Object) (content []byte, err error) {
