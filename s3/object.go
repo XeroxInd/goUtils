@@ -1,8 +1,10 @@
 package s3
 
 import (
+	"net/url"
 	"os"
 	"strconv"
+	"time"
 
 	"fmt"
 	"io/ioutil"
@@ -121,4 +123,55 @@ func (c *Config) getObject(s3object S3Object, encrypted bool) (obj *minio.Object
 		}
 	}
 	return obj, nil
+}
+
+func (c Config) CleanBucketFiles(bucketname string, lifetime time.Duration) (err error) {
+	exists := false
+	if exists, err = c.Client.BucketExists(bucketname); err != nil {
+		return
+	} else if !exists {
+		err = fmt.Errorf("bucket '%s' does not exist", bucketname)
+		return
+	}
+
+	for obj := range c.Client.ListObjectsV2(bucketname, "", false, nil) {
+		if obj.Err != nil {
+			err = obj.Err
+			return
+		}
+		delta := time.Since(obj.LastModified)
+		if delta > lifetime {
+			if err = c.Client.RemoveObject(bucketname, obj.Key); err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
+// PutAndGetTempURL does not use any encryption of the data
+func (c Config) PutAndGetTempURL(object S3Object, filename string, content []byte, days int) (link string, err error) {
+	_, err = c.Client.PutObject(
+		object.Bucket, object.Object,
+		bytes.NewReader(content), int64(len(content)),
+		minio.PutObjectOptions{ContentType: "application/octet-stream"})
+	if err != nil {
+		return
+	}
+
+	dur, _ := time.ParseDuration(fmt.Sprintf("%dh", days*24))
+
+	reqParams := make(url.Values)
+	reqParams.Set(
+		"response-content-disposition",
+		"attachment; filename=\""+filename)
+
+	presignedURL, err := c.Client.PresignedGetObject(
+		object.Bucket, object.Object, dur, reqParams)
+
+	if err != nil {
+		return
+	}
+	link = presignedURL.String()
+	return
 }
