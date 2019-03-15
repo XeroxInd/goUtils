@@ -47,7 +47,7 @@ func (c *Config) Load() error {
 	return err
 }
 
-func (c *Config) Put(s3object S3Object, content []byte) error {
+func (c *Config) put(s3object S3Object, content []byte, ssec bool) (err error) {
 	exist, err := c.Client.BucketExists(s3object.Bucket)
 	if err != nil {
 		return fmt.Errorf("unable to stat bucket : %s", err.Error())
@@ -58,35 +58,91 @@ func (c *Config) Put(s3object S3Object, content []byte) error {
 			return fmt.Errorf("unable to make missing bucket : %s", err.Error())
 		}
 	}
-
-	encryption, err := encrypt.NewSSEC(c.AesKeyValue)
-	if err != nil {
-		return fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
+	switch ssec {
+	case true:
+		encryption, err := encrypt.NewSSEC(c.AesKeyValue)
+		if err != nil {
+			return fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
+		}
+		_, err = c.Client.PutObject(s3object.Bucket, s3object.Object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
+			ContentType:          "application/octet-stream",
+			ServerSideEncryption: encryption,
+		})
+		if err != nil {
+			return fmt.Errorf("error when trying to put object : %s", err.Error())
+		}
+	default:
+		_, err = c.Client.PutObject(s3object.Bucket, s3object.Object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
+			ContentType: "application/octet-stream",
+		})
+		if err != nil {
+			return fmt.Errorf("error when trying to put object : %s", err.Error())
+		}
 	}
+	return
+}
 
-	_, err = c.Client.PutObject(s3object.Bucket, s3object.Object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
-		ContentType:          "application/octet-stream",
-		ServerSideEncryption: encryption,
-	})
-	if err != nil {
-		return fmt.Errorf("error when trying to put object : %s", err.Error())
+func (c *Config) Put(s3object S3Object, content []byte) error {
+	return c.put(s3object, content, true)
+}
+
+func (c *Config) PutClear(s3object S3Object, content []byte) error {
+	return c.put(s3object, content, false)
+}
+
+func (c *Config) stat(object S3Object, ssec bool) (info minio.ObjectInfo, err error) {
+	switch ssec {
+	case true:
+		encryption, err := encrypt.NewSSEC(c.AesKeyValue)
+		if err != nil {
+			return minio.ObjectInfo{}, fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
+		}
+		info, err = c.Client.StatObject(object.Bucket, object.Object, minio.StatObjectOptions{
+			minio.GetObjectOptions{
+				ServerSideEncryption: encryption,
+			},
+		})
+		if err != nil {
+			return minio.ObjectInfo{}, fmt.Errorf("unable to stat object : %s", err.Error())
+		}
+	default:
+		info, err = c.Client.StatObject(object.Bucket, object.Object, minio.StatObjectOptions{})
+		if err != nil {
+			return minio.ObjectInfo{}, fmt.Errorf("unable to stat object : %s", err.Error())
+		}
 	}
-	return nil
-
+	return
 }
 
 func (c *Config) Stat(object S3Object) (info minio.ObjectInfo, err error) {
-	encryption, err := encrypt.NewSSEC(c.AesKeyValue)
-	if err != nil {
-		return minio.ObjectInfo{}, fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
+	return c.stat(object, true)
+}
+
+func (c *Config) StatClear(object S3Object) (info minio.ObjectInfo, err error) {
+	return c.stat(object, false)
+}
+
+func (c *Config) SetMeta(object S3Object, meta map[string]string, ssec bool) (err error) {
+	var srcInfo minio.SourceInfo
+	var dstInfo minio.DestinationInfo
+	switch ssec {
+	case false:
+		srcInfo = minio.NewSourceInfo(object.Bucket, object.Object, nil)
+		dstInfo, err = minio.NewDestinationInfo(object.Bucket, object.Object, nil, meta)
+	default:
+		enc, err := encrypt.NewSSEC(c.AesKeyValue)
+		if err != nil {
+			return err
+		}
+		srcInfo = minio.NewSourceInfo(object.Bucket, object.Object, enc)
+		dstInfo, err = minio.NewDestinationInfo(object.Bucket, object.Object, enc, meta)
 	}
-	info, err = c.Client.StatObject(object.Bucket, object.Object, minio.StatObjectOptions{
-		minio.GetObjectOptions{
-			ServerSideEncryption: encryption,
-		},
-	})
 	if err != nil {
-		return minio.ObjectInfo{}, fmt.Errorf("unable to stat object : %s", err.Error())
+		return err
+	}
+	err = c.Client.CopyObject(dstInfo, srcInfo)
+	if err != nil {
+		return err
 	}
 	return
 }
