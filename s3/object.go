@@ -1,6 +1,7 @@
 package s3
 
 import (
+	"net/http"
 	"net/url"
 	"os"
 	"strconv"
@@ -98,7 +99,7 @@ func (c *Config) stat(object S3Object, ssec bool) (info minio.ObjectInfo, err er
 			return minio.ObjectInfo{}, fmt.Errorf("unable to get AES key to encrypt file : %s", err.Error())
 		}
 		info, err = c.Client.StatObject(object.Bucket, object.Object, minio.StatObjectOptions{
-			minio.GetObjectOptions{
+			GetObjectOptions: minio.GetObjectOptions{
 				ServerSideEncryption: encryption,
 			},
 		})
@@ -112,6 +113,31 @@ func (c *Config) stat(object S3Object, ssec bool) (info minio.ObjectInfo, err er
 		}
 	}
 	return
+}
+
+func (c *Config) ObjectExists(object S3Object, ssec bool) (bool, error) {
+	var soo = minio.StatObjectOptions{GetObjectOptions: minio.GetObjectOptions{}}
+
+	if ssec {
+		enc, err := encrypt.NewSSEC(c.AesKeyValue)
+		if err != nil {
+			return false, err
+		}
+
+		soo = minio.StatObjectOptions{GetObjectOptions: minio.GetObjectOptions{
+			ServerSideEncryption:enc,
+		}}
+	}
+
+	if _, err := c.Client.StatObject(object.Bucket, object.Object, soo); err != nil {
+		if e, ok := err.(minio.ErrorResponse); ok {
+			if e.StatusCode == http.StatusNotFound && e.Code == "NoSuchKey" {
+				return false, nil
+			}
+		}
+		return false, fmt.Errorf("unable to stat object : %s", err.Error())
+	}
+	return true, nil
 }
 
 func (c *Config) Stat(object S3Object) (info minio.ObjectInfo, err error) {

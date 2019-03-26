@@ -44,6 +44,32 @@ func TestPut(t *testing.T) {
 	}
 }
 
+func TestExists(t *testing.T) {
+	o := S3Object{"known", "known"}
+	exists, err := c.ObjectExists(o, true)
+	if err != nil {
+		t.Errorf("%s/%s: %v\n", o.Bucket, o.Object, err.Error())
+	} else if exists == false {
+		t.Error("should be found and is not")
+	} else {
+		t.Log("ok")
+	}
+	exists, err = c.ObjectExists(S3Object{"unknown", "unknown"}, false)
+	if err != nil {
+		t.Errorf(err.Error())
+	} else if exists == true {
+		t.Error("should not be found and is")
+	} else {
+		t.Log("ok")
+	}
+	exists, err = c.ObjectExists(S3Object{"wololo", "wololo"}, false)
+	if err != nil {
+		t.Log("ok")
+	} else if exists {
+		t.Error("should be an error and is not")
+	}
+}
+
 func TestStatKnown(t *testing.T) {
 	_, err := c.Stat(S3Object{"known", "known"})
 	if err != nil {
