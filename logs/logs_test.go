@@ -2,9 +2,18 @@ package logs
 
 import (
 	"fmt"
+	"log"
 	"testing"
-	"time"
+
+	"github.com/getsentry/raven-go"
 )
+
+func init() {
+	err := raven.SetDSN("http://ef51cc527b8c4a0c9de3a29425db9c2d@sentry.libmed.fr/8")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+}
 
 func TestPrettyPrint(t *testing.T) {
 	type Test struct {
@@ -20,26 +29,9 @@ func TestPrettyPrint(t *testing.T) {
 }
 
 func TestInfo(t *testing.T) {
-	type args struct {
-		msg      string
-		category string
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		struct {
-			name string
-			args args
-		}{name: "test info", args: struct {
-			msg      string
-			category string
-		}{msg: "test", category: "category test"}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			Info(tt.args.msg, tt.args.category)
-		})
-	}
-	time.Sleep(1 * time.Second)
+	Info("test info message", "info test")
+}
+
+func TestError(t *testing.T) {
+	Error(fmt.Errorf("test error message"), "error test")
 }

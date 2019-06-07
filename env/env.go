@@ -5,8 +5,6 @@ import (
 	"strconv"
 )
 
-// GetEnvOrElse return the current value of env variable
-// or defaultValue
 func GetEnvOrElse(env string, defaultValue string) string {
 	v, ok := os.LookupEnv(env)
 	switch ok {
@@ -17,44 +15,44 @@ func GetEnvOrElse(env string, defaultValue string) string {
 	}
 }
 
-func GetIntEnvOrElse(env string, defaultValue int) int {
+func GetIntEnvOrElse(env string, defaultValue int) (value int, parseError error) {
 	v, ok := os.LookupEnv(env)
 	switch ok {
 	case true:
 		val, err := strconv.Atoi(v)
 		if err != nil {
-			return defaultValue
+			return defaultValue, err
 		}
-		return val
+		return val, err
 	default:
-		return defaultValue
+		return defaultValue, err
 	}
 }
 
-func GetFloatEnvOrElse(env string, defaultValue float64) float64 {
+func GetFloatEnvOrElse(env string, defaultValue float64) (value float64, parseError error) {
 	v, ok := os.LookupEnv(env)
 	switch ok {
 	case true:
 		val, err := strconv.ParseFloat(v, 64)
 		if err != nil {
-			return defaultValue
+			return defaultValue, err
 		}
-		return val
+		return val, err
 	default:
-		return defaultValue
+		return defaultValue, err
 	}
 }
 
-func GetBoolEnvOrElse(env string, defaultValue bool) bool {
+func GetBoolEnvOrElse(env string, defaultValue bool) (value bool, parseError error) {
 	v, ok := os.LookupEnv(env)
 	switch ok {
 	case true:
 		val, err := strconv.ParseBool(v)
 		if err != nil {
-			return defaultValue
+			return defaultValue, err
 		}
-		return val
+		return val, err
 	default:
-		return defaultValue
+		return defaultValue, err
 	}
 }
