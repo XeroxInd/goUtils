@@ -26,9 +26,9 @@ func GetIntEnvOrElse(env string, defaultValue int) (value int, parseError error)
 		if err != nil {
 			return defaultValue, errors.Wrap(err, fmt.Sprintf("error when trying to parse int for %s", env))
 		}
-		return val, err
+		return val, parseError
 	default:
-		return defaultValue, err
+		return defaultValue, parseError
 	}
 }
 
@@ -40,9 +40,9 @@ func GetFloatEnvOrElse(env string, defaultValue float64) (value float64, parseEr
 		if err != nil {
 			return defaultValue, errors.Wrap(err, fmt.Sprintf("error when trying to parse flot64 for %s", env))
 		}
-		return val, err
+		return val, parseError
 	default:
-		return defaultValue, err
+		return defaultValue, parseError
 	}
 }
 
@@ -54,8 +54,8 @@ func GetBoolEnvOrElse(env string, defaultValue bool) (value bool, parseError err
 		if err != nil {
 			return defaultValue, errors.Wrap(err, fmt.Sprintf("error when trying to parse bool for %s", env))
 		}
-		return val, err
+		return val, parseError
 	default:
-		return defaultValue, err
+		return defaultValue, parseError
 	}
 }
