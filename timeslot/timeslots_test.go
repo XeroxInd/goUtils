@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"git.libmed.fr/LibMed/goUtil/v2019/lm_object"
+	lm_object "git.libmed.fr/LibMed/ProtoObjects/v2019"
 	"github.com/golang/protobuf/ptypes/timestamp"
 )
 
@@ -15,7 +15,7 @@ func TestTimeslotsSum(t *testing.T) {
 	t2 := t0.Add(time.Hour * 24)
 	t3 := t2.Add(time.Hour * 3)
 	sum := TimeSlotSum([]*lm_object.Mission_TimeSlot{
-		&lm_object.Mission_TimeSlot{
+		{
 			Start: &timestamp.Timestamp{
 				Seconds: t0.Unix(),
 			},
@@ -23,7 +23,7 @@ func TestTimeslotsSum(t *testing.T) {
 				Seconds: t1.Unix(),
 			},
 		},
-		&lm_object.Mission_TimeSlot{
+		{
 			Start: &timestamp.Timestamp{
 				Seconds: t2.Unix(),
 			},
