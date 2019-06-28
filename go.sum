@@ -1,4 +1,6 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
+git.libmed.fr/LibMed/ProtoObjects v1.0.3-LMP-1442 h1:0AhfvuXOr2m2jIu0B/UOp9m7GTBAlPtapXUyFEVmLKk=
+git.libmed.fr/LibMed/ProtoObjects v1.0.3-LMP-1442/go.mod h1:hyGfqigXhs6OTOiZSPKpCJXq9/O9O1gZ56pc+NxSspE=
 git.libmed.fr/LibMed/ProtoObjects/v2019 v2019.4.1 h1:l7UZi+pdwCaVSfQTMLMJGVqmHJ6LJH6QxUmmANM25GY=
 git.libmed.fr/LibMed/ProtoObjects/v2019 v2019.4.1/go.mod h1:OHPXsu5HZt7bBaZ5OBsg+Rxt4IpxSg7Pi/dnxKutjNc=
 git.libmed.fr/LibMed/ProtoObjects/v2019 v2019.5.1 h1:2N/At0EpdS4fJ4J04QOs2AifAXR+i+vrHUUpVDBqfsI=

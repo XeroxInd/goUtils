@@ -3,7 +3,7 @@ module git.libmed.fr/LibMed/goUtil
 go 1.12
 
 require (
-	git.libmed.fr/LibMed/ProtoObjects/v2019 v2019.5.1
+	git.libmed.fr/LibMed/ProtoObjects v1.0.3-LMP-1442
 	github.com/certifi/gocertifi v0.0.0-20190105021004-abcd57078448 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-ini/ini v1.42.0 // indirect

@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	lm_object "git.libmed.fr/LibMed/ProtoObjects/v2019"
+	. "git.libmed.fr/LibMed/ProtoObjects"
 	"github.com/getsentry/raven-go"
 )
 
@@ -16,7 +16,7 @@ type MultiMissions map[string]map[string]struct { //map[institutionName]map[Serv
 	NbTs  int
 }
 
-func MissionTimeSlotSum(mission *lm_object.Mission) (dur time.Duration, err error) {
+func MissionTimeSlotSum(mission *Mission) (dur time.Duration, err error) {
 	tsw := mission.GetTimeSlotsWithSelected()
 	if tsw == nil {
 		err = errors.New("timeslots with selected is nil")
@@ -26,7 +26,7 @@ func MissionTimeSlotSum(mission *lm_object.Mission) (dur time.Duration, err erro
 	return
 }
 
-func TimeSlotSum(ts []*lm_object.Mission_TimeSlot) (total time.Duration) {
+func TimeSlotSum(ts []*Mission_TimeSlot) (total time.Duration) {
 	for _, slot := range ts {
 		start := time.Unix(slot.Start.GetSeconds(), int64(slot.Start.GetNanos()))
 		stop := time.Unix(slot.Stop.GetSeconds(), int64(slot.Stop.GetNanos()))
@@ -35,7 +35,7 @@ func TimeSlotSum(ts []*lm_object.Mission_TimeSlot) (total time.Duration) {
 	return
 }
 
-func Sort(ts []*lm_object.Mission_TimeSlot) (sorted []*lm_object.Mission_TimeSlot) {
+func Sort(ts []*Mission_TimeSlot) (sorted []*Mission_TimeSlot) {
 	sort.Slice(ts, func(i, j int) bool {
 		si := time.Unix(ts[i].Start.Seconds, int64(ts[i].Start.Nanos))
 		sj := time.Unix(ts[j].Start.Seconds, int64(ts[j].Start.Nanos))
@@ -44,7 +44,7 @@ func Sort(ts []*lm_object.Mission_TimeSlot) (sorted []*lm_object.Mission_TimeSlo
 	return ts
 }
 
-func GetBounds(ts []*lm_object.Mission_TimeSlot) (start, stop time.Time) {
+func GetBounds(ts []*Mission_TimeSlot) (start, stop time.Time) {
 	sorted := Sort(ts)
 	first := sorted[0].Start
 	last := sorted[len(sorted)-1].Stop
@@ -53,7 +53,7 @@ func GetBounds(ts []*lm_object.Mission_TimeSlot) (start, stop time.Time) {
 	return
 }
 
-func GetBoundsWithoutPast(ts []*lm_object.Mission_TimeSlot) (start, stop time.Time, length int) {
+func GetBoundsWithoutPast(ts []*Mission_TimeSlot) (start, stop time.Time, length int) {
 	sorted := Sort(ts)
 	first := sorted[0].Start
 	last := sorted[len(sorted)-1].Stop
@@ -71,7 +71,7 @@ func GetBoundsWithoutPast(ts []*lm_object.Mission_TimeSlot) (start, stop time.Ti
 	return
 }
 
-func GetMissionBounds(mission *lm_object.Mission) (start, stop time.Time, length int, err error) {
+func GetMissionBounds(mission *Mission) (start, stop time.Time, length int, err error) {
 	tsw := mission.GetTimeSlotsWithSelected()
 	if tsw == nil {
 		err = errors.New("timeslots with selected is nil")
@@ -85,7 +85,7 @@ func GetMissionBounds(mission *lm_object.Mission) (start, stop time.Time, length
 	return
 }
 
-func GetMissionBoundsWithoutPastTS(mission *lm_object.Mission) (start, stop time.Time, length int, err error) {
+func GetMissionBoundsWithoutPastTS(mission *Mission) (start, stop time.Time, length int, err error) {
 	tsw := mission.GetTimeSlotsWithSelected()
 
 	if tsw == nil {
@@ -99,7 +99,7 @@ func GetMissionBoundsWithoutPastTS(mission *lm_object.Mission) (start, stop time
 	return
 }
 
-func GroupMissions(m *lm_object.Missions) (all MultiMissions) {
+func GroupMissions(m *Missions) (all MultiMissions) {
 	all = make(MultiMissions)
 	for _, mi := range m.Missions {
 		start, stop, length, err := GetMissionBoundsWithoutPastTS(mi)
@@ -138,7 +138,7 @@ func GroupMissions(m *lm_object.Missions) (all MultiMissions) {
 	return
 }
 
-func GetMissionsBounds(missions *lm_object.Missions) (start, stop time.Time) {
+func GetMissionsBounds(missions *Missions) (start, stop time.Time) {
 	for _, m := range missions.Missions {
 		for _, t := range m.GetTimeSlotsWithSelected().TimeSlots {
 			tStart := time.Unix(t.Start.Seconds, int64(t.Start.Nanos))
