@@ -257,3 +257,35 @@ func (c Config) PutAndGetTempURL(object S3Object, filename string, content []byt
 	link = presignedURL.String()
 	return
 }
+
+func (c Config) Remove(object S3Object) (err error) {
+	err = c.Client.RemoveObject(object.Bucket, object.Object)
+	return
+}
+
+func (c Config) Copy(srcO S3Object, dstO S3Object, encrypted bool) (err error){
+	var src minio.SourceInfo
+	var dst minio.DestinationInfo
+	var encryption encrypt.ServerSide
+	if encrypted {
+		encryption, err = encrypt.NewSSEC(c.AesKeyValue)
+		src = minio.NewSourceInfo(srcO.Bucket, srcO.Object, encryption)
+		dst, err = minio.NewDestinationInfo(dstO.Bucket, dstO.Object, encryption, nil)
+	} else {
+		src = minio.NewSourceInfo(srcO.Bucket, srcO.Object, nil)
+		dst, err = minio.NewDestinationInfo(dstO.Bucket, dstO.Object, nil, nil)
+	}
+	if err != nil {
+		return
+	}
+	err = c.Client.CopyObject(dst, src)
+	return
+}
+
+func (c Config) Move(srcO S3Object, dstO S3Object, encrypted bool) (err error){
+	if err = c.Copy(srcO, dstO, encrypted); err != nil {
+		return
+	}
+	err = c.Remove(srcO)
+	return
+}
