@@ -2,20 +2,12 @@ package logs
 
 import (
 	"fmt"
-	"log"
 	"testing"
 	"time"
-
-	"github.com/getsentry/raven-go"
 )
 
-func init() {
-	err := raven.SetDSN("http://91a6b7f47e3a4419a2f66e02c87d4592:7ed4e739e65748ffb3d214439167f7a6@sentry.libmed.fr/3")
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-}
-
+// Don't forget to set your SENTRY_DSN environment variable to provided DSN
+// ex :
 func TestPrettyPrint(t *testing.T) {
 	type Test struct {
 		name string
@@ -41,4 +33,8 @@ func TestError(t *testing.T) {
 	time.Sleep(3 * time.Second)
 	ErrorWithTags(fmt.Errorf("test error message with tags"), map[string]string{"tag1": "toto", "tag2": "titi"})
 	time.Sleep(3 * time.Second)
+}
+
+func TestFatal(t *testing.T) {
+	Fatal("fatal error")
 }

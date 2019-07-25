@@ -45,6 +45,22 @@ func Error(err error) {
 	ErrorWithTags(err, map[string]string{})
 }
 
+func FatalWithTags(msg string, tags map[string]string) {
+	packet := &raven.Packet{
+		Message: msg,
+		Level:   raven.FATAL,
+	}
+	eventID, ch := raven.Capture(packet, tags)
+	if eventID != "" {
+		<-ch
+	}
+	log.Fatalf("%v, %s, %s", time.Now(), "[FATAL]", msg)
+}
+
+func Fatal(msg string) {
+	FatalWithTags(msg, map[string]string{})
+}
+
 func PanicWithTags(f func(), tags map[string]string) {
 	raven.CapturePanicAndWait(f, tags)
 }
