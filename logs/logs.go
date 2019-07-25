@@ -46,7 +46,7 @@ func Error(err error) {
 }
 
 func PanicWithTags(f func(), tags map[string]string) {
-	raven.CapturePanic(f, tags)
+	raven.CapturePanicAndWait(f, tags)
 }
 
 func Panic(f func()) {
