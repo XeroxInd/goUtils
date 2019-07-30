@@ -48,7 +48,7 @@ func (c *Config) Load() error {
 	return err
 }
 
-func (c *Config) put(s3object S3Object, content []byte, ssec bool) (err error) {
+func (c *Config) put(s3object S3Object, content []byte, ssec bool, meta map[string]string) (err error) {
 	exist, err := c.Client.BucketExists(s3object.Bucket)
 	if err != nil {
 		return fmt.Errorf("unable to stat bucket : %s", err.Error())
@@ -68,13 +68,15 @@ func (c *Config) put(s3object S3Object, content []byte, ssec bool) (err error) {
 		_, err = c.Client.PutObject(s3object.Bucket, s3object.Object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
 			ContentType:          "application/octet-stream",
 			ServerSideEncryption: encryption,
+			UserMetadata:         meta,
 		})
 		if err != nil {
 			return fmt.Errorf("error when trying to put object : %s", err.Error())
 		}
 	default:
 		_, err = c.Client.PutObject(s3object.Bucket, s3object.Object, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{
-			ContentType: "application/octet-stream",
+			ContentType:  "application/octet-stream",
+			UserMetadata: meta,
 		})
 		if err != nil {
 			return fmt.Errorf("error when trying to put object : %s", err.Error())
@@ -84,11 +86,15 @@ func (c *Config) put(s3object S3Object, content []byte, ssec bool) (err error) {
 }
 
 func (c *Config) Put(s3object S3Object, content []byte) error {
-	return c.put(s3object, content, true)
+	return c.put(s3object, content, true, nil)
 }
 
 func (c *Config) PutClear(s3object S3Object, content []byte) error {
-	return c.put(s3object, content, false)
+	return c.put(s3object, content, false, nil)
+}
+
+func (c *Config) PutWithMetadata(s3object S3Object, content []byte, meta map[string]string) (err error) {
+	return c.put(s3object, content, true, meta)
 }
 
 func (c *Config) stat(object S3Object, ssec bool) (info minio.ObjectInfo, err error) {
@@ -125,7 +131,7 @@ func (c *Config) ObjectExists(object S3Object, ssec bool) (bool, error) {
 		}
 
 		soo = minio.StatObjectOptions{GetObjectOptions: minio.GetObjectOptions{
-			ServerSideEncryption:enc,
+			ServerSideEncryption: enc,
 		}}
 	}
 
@@ -263,7 +269,7 @@ func (c Config) Remove(object S3Object) (err error) {
 	return
 }
 
-func (c Config) Copy(srcO S3Object, dstO S3Object, encrypted bool) (err error){
+func (c Config) Copy(srcO S3Object, dstO S3Object, encrypted bool) (err error) {
 	var src minio.SourceInfo
 	var dst minio.DestinationInfo
 	var encryption encrypt.ServerSide
@@ -282,7 +288,7 @@ func (c Config) Copy(srcO S3Object, dstO S3Object, encrypted bool) (err error){
 	return
 }
 
-func (c Config) Move(srcO S3Object, dstO S3Object, encrypted bool) (err error){
+func (c Config) Move(srcO S3Object, dstO S3Object, encrypted bool) (err error) {
 	if err = c.Copy(srcO, dstO, encrypted); err != nil {
 		return
 	}
