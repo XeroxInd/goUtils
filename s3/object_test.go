@@ -3,6 +3,7 @@ package s3
 import (
 	"crypto/rand"
 	"log"
+	"os"
 	"testing"
 )
 
@@ -10,12 +11,12 @@ var c Config
 var randValue = make([]byte, 1024)
 
 func init() {
-	c = Config{
-		EndPoint:    "s3qa.libmed.fr",
-		AccessKeyID: "15FHJF9E8RH4C0TXH4IT",
-		SecretKey:   "a7/4e0qjIl+IPhYxhI2J0m5m+eWhPuoQFc9wr9qk",
-		UseSSL:      true,
-	}
+	c = Config{}
+	_ = os.Setenv("S3_ENDPOINT", "s3qa.libmed.fr")
+	_ = os.Setenv("S3_ACCESS_ID", "15FHJF9E8RH4C0TXH4IT")
+	_ = os.Setenv("S3_SECRET_KEY", "a7/4e0qjIl+IPhYxhI2J0m5m+eWhPuoQFc9wr9qk")
+	_ = os.Setenv("S3_SSL", "true")
+	_ = os.Setenv("S3_AES_KEY_PATH", "key.txt")
 	err := c.Load()
 	if err != nil {
 		log.Fatal(err.Error())
