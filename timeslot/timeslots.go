@@ -45,11 +45,13 @@ func Sort(ts []*Mission_TimeSlot) (sorted []*Mission_TimeSlot) {
 }
 
 func GetBounds(ts []*Mission_TimeSlot) (start, stop time.Time) {
-	sorted := Sort(ts)
-	first := sorted[0].Start
-	last := sorted[len(sorted)-1].Stop
-	start = time.Unix(first.GetSeconds(), int64(first.GetNanos()))
-	stop = time.Unix(last.GetSeconds(), int64(last.GetNanos()))
+	if len(ts) != 0 {
+		sorted := Sort(ts)
+		first := sorted[0].Start
+		last := sorted[len(sorted)-1].Stop
+		start = time.Unix(first.GetSeconds(), int64(first.GetNanos()))
+		stop = time.Unix(last.GetSeconds(), int64(last.GetNanos()))
+	}
 	return
 }
 
