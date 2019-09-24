@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
-	"time"
 
 	"github.com/getsentry/raven-go"
 )
@@ -19,7 +18,7 @@ func InfoWithTags(msg string, tags map[string]string) {
 		Level:   raven.INFO,
 	}
 	raven.Capture(packet, tags)
-	log.Printf("%v, %s, %s", time.Now(), "[INFO]", msg)
+	log.Printf("%s, %s", "[INFO]", msg)
 }
 
 // Info msg to std out and send an info event to the Sentry server
@@ -35,7 +34,7 @@ func Info(msg string) {
 // /!\ This is a non blocking call, if the program die just after the call, the message can be lost
 func ErrorWithTags(err error, tags map[string]string) {
 	raven.CaptureError(err, tags)
-	log.Printf("%v, %s, %s", time.Now(), "[ERROR]", err)
+	log.Printf("%s, %s", "[ERROR]", err)
 }
 
 // Error msg to std out and send an error event to the Sentry server
@@ -54,7 +53,7 @@ func FatalWithTags(msg string, tags map[string]string) {
 	if eventID != "" {
 		<-ch
 	}
-	log.Fatalf("%v, %s, %s", time.Now(), "[FATAL]", msg)
+	log.Fatalf("%s, %s", "[FATAL]", msg)
 }
 
 func Fatal(msg string) {
