@@ -18,20 +18,20 @@ func CheckNilPtr(value reflect.Value, name string) (bool, string) {
 		}
 		return CheckNilPtr(value.Elem(), name)
 	case reflect.Struct:
-		return CheckStruct(value, name)
+		return checkStruct(value, name)
 	case reflect.Slice:
-		return CheckArrayOrSlice(value, name)
+		return checkArrayOrSlice(value, name)
 	case reflect.Array:
-		return CheckArrayOrSlice(value, name)
+		return checkArrayOrSlice(value, name)
 	case reflect.Map:
-		return CheckMap(value, name)
+		return checkMap(value, name)
 	case reflect.Interface:
 		return CheckNilPtr(value.Elem(), name)
 	}
 	return false, ""
 }
 
-func CheckMap(value reflect.Value, name string) (bool, string) {
+func checkMap(value reflect.Value, name string) (bool, string) {
 	for _, key := range value.MapKeys() {
 		if ok, fieldName := CheckNilPtr(value.MapIndex(key), fmt.Sprintf("%s[%v]", name, key)); ok {
 			return true, fieldName
@@ -40,7 +40,7 @@ func CheckMap(value reflect.Value, name string) (bool, string) {
 	return  false, ""
 }
 
-func CheckStruct(value reflect.Value, _ string) (bool, string) {
+func checkStruct(value reflect.Value, _ string) (bool, string) {
 	for i := 0; i < value.NumField(); i += 1 {
 		if ok, fieldName := CheckNilPtr(value.Field(i), value.Type().Field(i).Name); ok {
 			return true, fieldName
@@ -49,7 +49,7 @@ func CheckStruct(value reflect.Value, _ string) (bool, string) {
 	return false, ""
 }
 
-func CheckArrayOrSlice(value reflect.Value, name string) (bool, string) {
+func checkArrayOrSlice(value reflect.Value, name string) (bool, string) {
 	for i := 0; i < value.Len(); i += 1 {
 		if ok, fieldName := CheckNilPtr(value.Index(i), fmt.Sprintf("%s[%d]", name, i)); ok {
 			return true, fieldName
