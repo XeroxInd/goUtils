@@ -1,7 +1,7 @@
 package nats
 
 import (
-	stan "github.com/nats-io/go-nats-streaming"
+	"github.com/nats-io/stan.go"
 	"log"
 	"testing"
 )

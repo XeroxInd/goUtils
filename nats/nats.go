@@ -2,7 +2,7 @@ package nats
 
 import (
 	"fmt"
-	"github.com/nats-io/go-nats-streaming"
+	"github.com/nats-io/stan.go"
 	"log"
 	"os"
 )
