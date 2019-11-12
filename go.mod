@@ -1,6 +1,6 @@
 module git.libmed.fr/LibMed/goUtil
 
-go 1.12
+go 1.13
 
 require (
 	git.libmed.fr/LibMed/ProtoObjects v1.0.2
