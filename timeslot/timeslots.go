@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	. "git.libmed.fr/LibMed/ProtoObjects"
+	. "git.libmed.fr/LibMed/ProtoObjects/golang"
 	"github.com/getsentry/raven-go"
 )
 

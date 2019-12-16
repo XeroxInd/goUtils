@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	lm_object "git.libmed.fr/LibMed/ProtoObjects"
+	lm_object "git.libmed.fr/LibMed/ProtoObjects/golang"
 	"github.com/golang/protobuf/ptypes/timestamp"
 )
 
