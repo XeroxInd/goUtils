@@ -28,6 +28,13 @@ func TestInfo(t *testing.T) {
 	time.Sleep(3 * time.Second)
 }
 
+func TestInfof(t *testing.T) {
+	Infof("test info message : %s, %d", "pouet", 42)
+	time.Sleep(3 * time.Second)
+	InfoWithTags("test info message with tags", map[string]string{"tag1": "toto", "tag2": "titi"})
+	time.Sleep(3 * time.Second)
+}
+
 func TestError(t *testing.T) {
 	Error(fmt.Errorf("test error message"))
 	time.Sleep(3 * time.Second)
@@ -37,4 +44,8 @@ func TestError(t *testing.T) {
 
 func TestFatal(t *testing.T) {
 	Fatal("fatal error")
+}
+
+func TestFatalf(t *testing.T) {
+	Fatalf("fatal error : %s", "kaboom")
 }

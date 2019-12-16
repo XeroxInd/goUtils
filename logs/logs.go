@@ -3,6 +3,7 @@ package logs
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/getsentry/raven-go"
@@ -26,6 +27,10 @@ func InfoWithTags(msg string, tags map[string]string) {
 // /!\ This is a non blocking call, if the program die just after the call, the message can be lost
 func Info(msg string) {
 	InfoWithTags(msg, map[string]string{})
+}
+
+func Infof(format string, a ...interface{}) {
+	Info(fmt.Sprintf(format, a...))
 }
 
 // Error msg to std out and send an error event to the Sentry server
@@ -58,6 +63,10 @@ func FatalWithTags(msg string, tags map[string]string) {
 
 func Fatal(msg string) {
 	FatalWithTags(msg, map[string]string{})
+}
+
+func Fatalf(format string, a ...interface{}) {
+	Fatal(fmt.Sprintf(format, a...))
 }
 
 func PanicWithTags(f func(), tags map[string]string) {
