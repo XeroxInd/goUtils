@@ -1,9 +1,10 @@
 package nats
 
 import (
-	"github.com/nats-io/stan.go"
 	"log"
 	"testing"
+
+	"github.com/nats-io/stan.go"
 )
 
 var c Config

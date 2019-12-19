@@ -1,16 +1,14 @@
 package s3
 
 import (
+	"bytes"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 	"time"
-
-	"fmt"
-	"io/ioutil"
-
-	"bytes"
 
 	"github.com/minio/minio-go"
 	"github.com/minio/minio-go/pkg/encrypt"

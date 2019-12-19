@@ -1,9 +1,8 @@
-module git.libmed.fr/LibMed/goUtil
+module git.solutions.im/Solutions.IM/goUtils
 
 go 1.13
 
 require (
-	git.libmed.fr/LibMed/ProtoObjects v1.0.16-develop
 	github.com/certifi/gocertifi v0.0.0-20190506164543-d2eda7129713 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-ini/ini v1.44.0 // indirect

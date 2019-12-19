@@ -14,8 +14,8 @@ func TestPrettyPrint(t *testing.T) {
 		age  int
 	}
 	var test = map[string]Test{
-		"test1": Test{name: "tintin", age: 32},
-		"test2": Test{name: "hadock", age: 54},
+		"test1": {name: "tintin", age: 32},
+		"test2": {name: "hadock", age: 54},
 	}
 	s, _ := PrettyPrint(test)
 	fmt.Printf("%v", s)

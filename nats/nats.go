@@ -2,18 +2,19 @@ package nats
 
 import (
 	"fmt"
-	"github.com/nats-io/stan.go"
 	"log"
 	"os"
+
+	"github.com/nats-io/stan.go"
 )
 
 func (c *Config) Load() {
 	var err error
 	if c.clusterID == "" {
-		c.clusterID = os.Getenv("NATS_CLUSTER_ID", )
+		c.clusterID = os.Getenv("NATS_CLUSTER_ID")
 	}
 	if c.clientID == "" {
-		c.clientID = os.Getenv("NATS_CLIENT_ID", )
+		c.clientID = os.Getenv("NATS_CLIENT_ID")
 	}
 	if c.url == "" {
 		c.url = os.Getenv("NATS_URL")
@@ -47,7 +48,7 @@ func (c *Config) Publish(subject string, message []byte) (err error) {
 	return c.connection.Publish(subject, message)
 }
 
-func (c *Config) ShutDown(subs ...stan.Subscription) (err error){
+func (c *Config) ShutDown(subs ...stan.Subscription) (err error) {
 	log.Print("closing NATS connection...")
 	for _, s := range subs {
 		err = s.Close()

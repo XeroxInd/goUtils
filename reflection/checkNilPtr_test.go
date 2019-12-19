@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-
 func TestCheckNilPtr(t *testing.T) {
 	type nestedStruct struct {
 		datePtr *string
@@ -17,26 +16,26 @@ func TestCheckNilPtr(t *testing.T) {
 	}
 
 	type structWithPointersFail struct {
-		data string
-		strPtrMap map[string]*string
-		strPtrArray [3]*string
-		strPtrSlice []*string
+		data          string
+		strPtrMap     map[string]*string
+		strPtrArray   [3]*string
+		strPtrSlice   []*string
 		interfaceWrap interface{}
-		dataStruct nestedStruct
+		dataStruct    nestedStruct
 		dataStructPtr *nestedStruct
-		strPtr *string
-		bigStruct bigStruct
+		strPtr        *string
+		bigStruct     bigStruct
 	}
 
 	type structWithPointersSuccess struct {
-		data string
-		strPtrMap map[string]*string
-		strPtrArray [3]*string
-		strPtrSlice []*string
+		data          string
+		strPtrMap     map[string]*string
+		strPtrArray   [3]*string
+		strPtrSlice   []*string
 		interfaceWrap interface{}
-		dataStruct nestedStruct
+		dataStruct    nestedStruct
 		dataStructPtr *nestedStruct
-		strPtr *string
+		strPtr        *string
 	}
 
 	stringPtr := new(string)
@@ -63,14 +62,14 @@ func TestCheckNilPtr(t *testing.T) {
 	hasNil, fieldName := CheckNilPtr(reflect.ValueOf(fail), "fail")
 
 	fmt.Printf("Struct contain nil field : [%t] at [%s] \n", hasNil, fieldName)
-	if (!hasNil || fieldName != "structPtr") {
+	if !hasNil || fieldName != "structPtr" {
 		t.Errorf("CheckNilPtr expected: [true] at [strPtr] got: [%t] at [%v]",
 			hasNil, fieldName)
 	}
 	hasNil, fieldName = CheckNilPtr(reflect.ValueOf(success), "fail")
 
 	fmt.Printf("Struct contain nil field : [%t] at [%s] \n", hasNil, fieldName)
-	if (hasNil || fieldName != "") {
+	if hasNil || fieldName != "" {
 		t.Errorf("CheckNilPtr expected: [false] at [] got: [%t] at [%v]",
 			hasNil, fieldName)
 	}
