@@ -1,4 +1,4 @@
-module git.solutions.im/Solutions.IM/goUtils
+module github.com/XeroxInd/goUtils
 
 go 1.13
 
@@ -6,7 +6,6 @@ require (
 	github.com/certifi/gocertifi v0.0.0-20190506164543-d2eda7129713 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-ini/ini v1.44.0 // indirect
-	github.com/golang/protobuf v1.3.2
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
